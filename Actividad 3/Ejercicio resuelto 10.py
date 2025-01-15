@@ -1,66 +1,67 @@
 import tkinter as tk
+from tkinter import messagebox
 
 class Estudiante:
-    def __init__(self, num_inscripcion, nombres, patrimonio, estrato):
-        self.num_inscripcion = num_inscripcion
+    def __init__(self, numero_inscripcion, nombres, patrimonio, estrato):
+        self.numero_inscripcion = numero_inscripcion
         self.nombres = nombres
         self.patrimonio = patrimonio
         self.estrato = estrato
 
     def calcular_pago_matricula(self):
-        base_pago = 50000
+        valor_base = 50000
         if self.patrimonio > 2000000 and self.estrato > 3:
-            return base_pago + (self.patrimonio * 0.03)
-        return base_pago
+            recargo = self.patrimonio * 0.03
+            return valor_base + recargo
+        return valor_base
 
-class InterfazEstudiante:
-    def __init__(self):
-        self.root = tk.Tk()
-        self.root.title("Estudiante")
+class InterfazGrafica:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Liquidación de Matrícula Universitaria")
 
-        # Widgets de entrada
-        tk.Label(self.root, text="Número de Inscripción").grid(row=0, column=0)
-        tk.Label(self.root, text="Nombres").grid(row=1, column=0)
-        tk.Label(self.root, text="Patrimonio").grid(row=2, column=0)
-        tk.Label(self.root, text="Estrato").grid(row=3, column=0)
+        # Etiquetas y campos de entrada
+        tk.Label(root, text="Número de Inscripción:").grid(row=0, column=0, padx=10, pady=5)
+        self.inscripcion_entry = tk.Entry(root)
+        self.inscripcion_entry.grid(row=0, column=1, padx=10, pady=5)
 
-        self.num_inscripcion = tk.Entry(self.root)
-        self.nombres = tk.Entry(self.root)
-        self.patrimonio = tk.Entry(self.root)
-        self.estrato = tk.Entry(self.root)
+        tk.Label(root, text="Nombres:").grid(row=1, column=0, padx=10, pady=5)
+        self.nombres_entry = tk.Entry(root)
+        self.nombres_entry.grid(row=1, column=1, padx=10, pady=5)
 
-        self.num_inscripcion.grid(row=0, column=1)
-        self.nombres.grid(row=1, column=1)
-        self.patrimonio.grid(row=2, column=1)
-        self.estrato.grid(row=3, column=1)
+        tk.Label(root, text="Patrimonio:").grid(row=2, column=0, padx=10, pady=5)
+        self.patrimonio_entry = tk.Entry(root)
+        self.patrimonio_entry.grid(row=2, column=1, padx=10, pady=5)
 
-        # Botón
-        tk.Button(self.root, text="Calcular", command=self.calcular).grid(row=4, columnspan=2)
+        tk.Label(root, text="Estrato Social:").grid(row=3, column=0, padx=10, pady=5)
+        self.estrato_entry = tk.Entry(root)
+        self.estrato_entry.grid(row=3, column=1, padx=10, pady=5)
 
-        # Resultados
-        self.resultado = tk.Text(self.root, height=5, width=30)
-        self.resultado.grid(row=5, columnspan=2)
+        # Botón para calcular
+        tk.Button(root, text="Calcular Matrícula", command=self.calcular_matricula).grid(row=4, column=0, columnspan=2, pady=10)
 
-    def calcular(self):
-        est = Estudiante(
-            self.num_inscripcion.get(),
-            self.nombres.get(),
-            float(self.patrimonio.get()),
-            int(self.estrato.get())
-        )
+    def calcular_matricula(self):
+        try:
+            numero_inscripcion = self.inscripcion_entry.get()
+            nombres = self.nombres_entry.get()
+            patrimonio = float(self.patrimonio_entry.get())
+            estrato = int(self.estrato_entry.get())
 
-        pago_matricula = est.calcular_pago_matricula()
+            # Crear instancia de Estudiante
+            estudiante = Estudiante(numero_inscripcion, nombres, patrimonio, estrato)
 
-        resultado_texto = (
-            f"Número de Inscripción: {est.num_inscripcion}\n"
-            f"Nombres: {est.nombres}\n"
-            f"Pago de Matrícula: {pago_matricula}\n"
-        )
+            # Calcular matrícula
+            pago_matricula = estudiante.calcular_pago_matricula()
 
-        self.resultado.delete(1.0, tk.END)
-        self.resultado.insert(tk.END, resultado_texto)
+            # Mostrar resultados
+            messagebox.showinfo("Resultados", f"Número de Inscripción: {estudiante.numero_inscripcion}\n"
+                                              f"Nombres: {estudiante.nombres}\n"
+                                              f"Pago de Matrícula: ${pago_matricula:.2f}")
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingrese datos válidos en todos los campos.")
 
-    def ejecutar(self):
-        self.root.mainloop()
-
-# InterfazEstudiante().ejecutar()
+# Inicializar la aplicación
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = InterfazGrafica(root)
+    root.mainloop()
