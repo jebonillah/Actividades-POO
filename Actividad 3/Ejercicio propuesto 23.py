@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-import cmath
+import math
 
-# Clase EcuacionCuadratica
 class EcuacionCuadratica:
     def __init__(self, a, b, c):
         self.a = a
@@ -10,45 +9,48 @@ class EcuacionCuadratica:
         self.c = c
 
     def calcular_soluciones(self):
-        discriminante = cmath.sqrt(self.b**2 - 4*self.a*self.c)
-        solucion1 = (-self.b + discriminante) / (2 * self.a)
-        solucion2 = (-self.b - discriminante) / (2 * self.a)
-        return solucion1, solucion2
+        discriminante = self.b ** 2 - 4 * self.a * self.c
+        if discriminante < 0:
+            return "No hay soluciones reales"
+        elif discriminante == 0:
+            solucion = -self.b / (2 * self.a)
+            return f"Una solución real: {solucion}"
+        else:
+            raiz1 = (-self.b + math.sqrt(discriminante)) / (2 * self.a)
+            raiz2 = (-self.b - math.sqrt(discriminante)) / (2 * self.a)
+            return f"Dos soluciones reales: {raiz1}, {raiz2}"
 
-# Función para calcular y mostrar las soluciones
-def calcular_ecuacion():
-    try:
-        a = float(entry_a.get())
-        b = float(entry_b.get())
-        c = float(entry_c.get())
+class InterfazEcuacionCuadratica:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("Ecuación Cuadrática")
+        self.crear_interfaz()
 
-        if a == 0:
-            messagebox.showerror("Error", "El coeficiente A no puede ser cero.")
-            return
+    def crear_interfaz(self):
+        tk.Label(self.root, text="Ingrese el valor de A:").pack()
+        self.entry_a = tk.Entry(self.root)
+        self.entry_a.pack()
+        tk.Label(self.root, text="Ingrese el valor de B:").pack()
+        self.entry_b = tk.Entry(self.root)
+        self.entry_b.pack()
+        tk.Label(self.root, text="Ingrese el valor de C:").pack()
+        self.entry_c = tk.Entry(self.root)
+        self.entry_c.pack()
+        tk.Button(self.root, text="Calcular Soluciones", command=self.calcular_soluciones).pack()
 
-        ecuacion = EcuacionCuadratica(a, b, c)
-        solucion1, solucion2 = ecuacion.calcular_soluciones()
+    def calcular_soluciones(self):
+        try:
+            a = float(self.entry_a.get())
+            b = float(self.entry_b.get())
+            c = float(self.entry_c.get())
+            ecuacion = EcuacionCuadratica(a, b, c)
+            soluciones = ecuacion.calcular_soluciones()
+            messagebox.showinfo("Soluciones", soluciones)
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos para A, B y C.")
 
-        messagebox.showinfo("Soluciones", f"Solución 1: {solucion1}\nSolución 2: {solucion2}")
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos.")
+    def ejecutar(self):
+        self.root.mainloop()
 
-# Configuración de la interfaz gráfica
-root = tk.Tk()
-root.title("Calculadora de Ecuación Cuadrática")
-
-tk.Label(root, text="Valor de A").grid(row=0, column=0)
-entry_a = tk.Entry(root)
-entry_a.grid(row=0, column=1)
-
-tk.Label(root, text="Valor de B").grid(row=1, column=0)
-entry_b = tk.Entry(root)
-entry_b.grid(row=1, column=1)
-
-tk.Label(root, text="Valor de C").grid(row=2, column=0)
-entry_c = tk.Entry(root)
-entry_c.grid(row=2, column=1)
-
-tk.Button(root, text="Calcular Soluciones", command=calcular_ecuacion).grid(row=3, column=0, columnspan=2)
-
-root.mainloop()
+interfaz = InterfazEcuacionCuadratica()
+interfaz.ejecutar()
