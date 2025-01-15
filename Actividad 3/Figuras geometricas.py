@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import math
 
-# Clase Círculo
+# Definición de las clases para las figuras geométricas
 class Circulo:
     def __init__(self, radio):
         self.radio = radio
@@ -13,7 +13,6 @@ class Circulo:
     def calcular_perimetro(self):
         return 2 * math.pi * self.radio
 
-# Clase Rectángulo
 class Rectangulo:
     def __init__(self, base, altura):
         self.base = base
@@ -25,12 +24,10 @@ class Rectangulo:
     def calcular_perimetro(self):
         return 2 * (self.base + self.altura)
 
-# Clase Cuadrado
 class Cuadrado(Rectangulo):
     def __init__(self, lado):
         super().__init__(lado, lado)
 
-# Clase Triángulo Rectángulo
 class TrianguloRectangulo:
     def __init__(self, base, altura):
         self.base = base
@@ -54,90 +51,98 @@ class TrianguloRectangulo:
         else:
             return "Escaleno"
 
-# Funciones para cada figura
-def calcular_circulo():
-    try:
-        radio = float(entry_radio.get())
-        circulo = Circulo(radio)
-        area = circulo.calcular_area()
-        perimetro = circulo.calcular_perimetro()
-        messagebox.showinfo("Resultados Círculo", f"Área: {area:.2f}\nPerímetro: {perimetro:.2f}")
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para el radio.")
+# Clase para la interfaz gráfica
+class InterfazFiguras:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("Calculadora de Figuras Geométricas")
+        self.crear_interfaz()
 
-def calcular_rectangulo():
-    try:
-        base = float(entry_base_rectangulo.get())
-        altura = float(entry_altura_rectangulo.get())
-        rectangulo = Rectangulo(base, altura)
-        area = rectangulo.calcular_area()
-        perimetro = rectangulo.calcular_perimetro()
-        messagebox.showinfo("Resultados Rectángulo", f"Área: {area}\nPerímetro: {perimetro}")
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos para la base y altura.")
+    def crear_interfaz(self):
+        # Círculo
+        frame_circulo = tk.Frame(self.root)
+        frame_circulo.pack(pady=10)
+        tk.Label(frame_circulo, text="Círculo - Radio").pack()
+        self.entry_radio = tk.Entry(frame_circulo)
+        self.entry_radio.pack()
+        tk.Button(frame_circulo, text="Calcular Círculo", command=self.calcular_circulo).pack()
 
-def calcular_cuadrado():
-    try:
-        lado = float(entry_lado.get())
-        cuadrado = Cuadrado(lado)
-        area = cuadrado.calcular_area()
-        perimetro = cuadrado.calcular_perimetro()
-        messagebox.showinfo("Resultados Cuadrado", f"Área: {area}\nPerímetro: {perimetro}")
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para el lado.")
+        # Rectángulo
+        frame_rectangulo = tk.Frame(self.root)
+        frame_rectangulo.pack(pady=10)
+        tk.Label(frame_rectangulo, text="Rectángulo - Base y Altura").pack()
+        self.entry_base_rectangulo = tk.Entry(frame_rectangulo)
+        self.entry_base_rectangulo.pack()
+        self.entry_altura_rectangulo = tk.Entry(frame_rectangulo)
+        self.entry_altura_rectangulo.pack()
+        tk.Button(frame_rectangulo, text="Calcular Rectángulo", command=self.calcular_rectangulo).pack()
 
-def calcular_triangulo():
-    try:
-        base = float(entry_base_triangulo.get())
-        altura = float(entry_altura_triangulo.get())
-        triangulo = TrianguloRectangulo(base, altura)
-        area = triangulo.calcular_area()
-        perimetro = triangulo.calcular_perimetro()
-        hipotenusa = triangulo.calcular_hipotenusa()
-        tipo = triangulo.determinar_tipo()
-        messagebox.showinfo("Resultados Triángulo Rectángulo", 
-                            f"Área: {area}\nPerímetro: {perimetro:.2f}\nHipotenusa: {hipotenusa:.2f}\nTipo: {tipo}")
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos para la base y altura.")
+        # Cuadrado
+        frame_cuadrado = tk.Frame(self.root)
+        frame_cuadrado.pack(pady=10)
+        tk.Label(frame_cuadrado, text="Cuadrado - Lado").pack()
+        self.entry_lado = tk.Entry(frame_cuadrado)
+        self.entry_lado.pack()
+        tk.Button(frame_cuadrado, text="Calcular Cuadrado", command=self.calcular_cuadrado).pack()
 
-# Configuración de la interfaz gráfica
-root = tk.Tk()
-root.title("Calculadora de Figuras Geométricas")
+        # Triángulo Rectángulo
+        frame_triangulo = tk.Frame(self.root)
+        frame_triangulo.pack(pady=10)
+        tk.Label(frame_triangulo, text="Triángulo Rectángulo - Base y Altura").pack()
+        self.entry_base_triangulo = tk.Entry(frame_triangulo)
+        self.entry_base_triangulo.pack()
+        self.entry_altura_triangulo = tk.Entry(frame_triangulo)
+        self.entry_altura_triangulo.pack()
+        tk.Button(frame_triangulo, text="Calcular Triángulo", command=self.calcular_triangulo).pack()
 
-# Ventana para Círculo
-frame_circulo = tk.Frame(root)
-frame_circulo.pack(pady=10)
-tk.Label(frame_circulo, text="Círculo - Radio").pack()
-entry_radio = tk.Entry(frame_circulo)
-entry_radio.pack()
-tk.Button(frame_circulo, text="Calcular Círculo", command=calcular_circulo).pack()
+    def calcular_circulo(self):
+        try:
+            radio = float(self.entry_radio.get())
+            circulo = Circulo(radio)
+            area = circulo.calcular_area()
+            perimetro = circulo.calcular_perimetro()
+            messagebox.showinfo("Resultados Círculo", f"Área: {area:.2f}\nPerímetro: {perimetro:.2f}")
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para el radio.")
 
-# Ventana para Rectángulo
-frame_rectangulo = tk.Frame(root)
-frame_rectangulo.pack(pady=10)
-tk.Label(frame_rectangulo, text="Rectángulo - Base y Altura").pack()
-entry_base_rectangulo = tk.Entry(frame_rectangulo)
-entry_base_rectangulo.pack()
-entry_altura_rectangulo = tk.Entry(frame_rectangulo)
-entry_altura_rectangulo.pack()
-tk.Button(frame_rectangulo, text="Calcular Rectángulo", command=calcular_rectangulo).pack()
+    def calcular_rectangulo(self):
+        try:
+            base = float(self.entry_base_rectangulo.get())
+            altura = float(self.entry_altura_rectangulo.get())
+            rectangulo = Rectangulo(base, altura)
+            area = rectangulo.calcular_area()
+            perimetro = rectangulo.calcular_perimetro()
+            messagebox.showinfo("Resultados Rectángulo", f"Área: {area}\nPerímetro: {perimetro}")
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos para la base y altura.")
 
-# Ventana para Cuadrado
-frame_cuadrado = tk.Frame(root)
-frame_cuadrado.pack(pady=10)
-tk.Label(frame_cuadrado, text="Cuadrado - Lado").pack()
-entry_lado = tk.Entry(frame_cuadrado)
-entry_lado.pack()
-tk.Button(frame_cuadrado, text="Calcular Cuadrado", command=calcular_cuadrado).pack()
+    def calcular_cuadrado(self):
+        try:
+            lado = float(self.entry_lado.get())
+            cuadrado = Cuadrado(lado)
+            area = cuadrado.calcular_area()
+            perimetro = cuadrado.calcular_perimetro()
+            messagebox.showinfo("Resultados Cuadrado", f"Área: {area}\nPerímetro: {perimetro}")
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido para el lado.")
 
-# Ventana para Triángulo Rectángulo
-frame_triangulo = tk.Frame(root)
-frame_triangulo.pack(pady=10)
-tk.Label(frame_triangulo, text="Triángulo Rectángulo - Base y Altura").pack()
-entry_base_triangulo = tk.Entry(frame_triangulo)
-entry_base_triangulo.pack()
-entry_altura_triangulo = tk.Entry(frame_triangulo)
-entry_altura_triangulo.pack()
-tk.Button(frame_triangulo, text="Calcular Triángulo", command=calcular_triangulo).pack()
+    def calcular_triangulo(self):
+        try:
+            base = float(self.entry_base_triangulo.get())
+            altura = float(self.entry_altura_triangulo.get())
+            triangulo = TrianguloRectangulo(base, altura)
+            area = triangulo.calcular_area()
+            perimetro = triangulo.calcular_perimetro()
+            hipotenusa = triangulo.calcular_hipotenusa()
+            tipo = triangulo.determinar_tipo()
+            messagebox.showinfo("Resultados Triángulo Rectángulo", 
+                                f"Área: {area}\nPerímetro: {perimetro:.2f}\nHipotenusa: {hipotenusa:.2f}\nTipo: {tipo}")
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingrese valores numéricos válidos para la base y altura.")
 
-root.mainloop()
+    def ejecutar(self):
+        self.root.mainloop()
+
+# Instanciar y ejecutar la interfaz gráfica
+interfaz = InterfazFiguras()
+interfaz.ejecutar()
