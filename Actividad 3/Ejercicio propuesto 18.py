@@ -1,64 +1,74 @@
 import tkinter as tk
-from tkinter import messagebox
 
-# Clase Empleado
 class Empleado:
-    def __init__(self, codigo, nombres, horas_trabajadas, valor_hora, porcentaje_retencion):
+    def __init__(self, codigo, nombres, horas_trabajadas, valor_hora, retencion):
         self.codigo = codigo
         self.nombres = nombres
         self.horas_trabajadas = horas_trabajadas
         self.valor_hora = valor_hora
-        self.porcentaje_retencion = porcentaje_retencion
+        self.retencion = retencion
 
     def calcular_salario_bruto(self):
         return self.horas_trabajadas * self.valor_hora
 
     def calcular_salario_neto(self):
         salario_bruto = self.calcular_salario_bruto()
-        retencion = salario_bruto * (self.porcentaje_retencion / 100)
-        return salario_bruto - retencion
+        return salario_bruto * (1 - self.retencion / 100)
 
-# Función para calcular y mostrar los resultados
-def calcular_salarios():
-    try:
-        codigo = entry_codigo.get()
-        nombres = entry_nombres.get()
-        horas_trabajadas = float(entry_horas.get())
-        valor_hora = float(entry_valor_hora.get())
-        porcentaje_retencion = float(entry_retencion.get())
+class InterfazEmpleado:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("Empleado")
 
-        empleado = Empleado(codigo, nombres, horas_trabajadas, valor_hora, porcentaje_retencion)
-        salario_bruto = empleado.calcular_salario_bruto()
-        salario_neto = empleado.calcular_salario_neto()
+        # Widgets de entrada
+        tk.Label(self.root, text="Código").grid(row=0, column=0)
+        tk.Label(self.root, text="Nombres").grid(row=1, column=0)
+        tk.Label(self.root, text="Horas Trabajadas").grid(row=2, column=0)
+        tk.Label(self.root, text="Valor por Hora").grid(row=3, column=0)
+        tk.Label(self.root, text="Retención (%)").grid(row=4, column=0)
 
-        messagebox.showinfo("Resultados", f"Código: {codigo}\nNombres: {nombres}\nSalario Bruto: ${salario_bruto:.2f}\nSalario Neto: ${salario_neto:.2f}")
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese valores válidos.")
+        self.codigo = tk.Entry(self.root)
+        self.nombres = tk.Entry(self.root)
+        self.horas_trabajadas = tk.Entry(self.root)
+        self.valor_hora = tk.Entry(self.root)
+        self.retencion = tk.Entry(self.root)
 
-# Configuración de la interfaz gráfica
-root = tk.Tk()
-root.title("Calculadora de Salarios")
+        self.codigo.grid(row=0, column=1)
+        self.nombres.grid(row=1, column=1)
+        self.horas_trabajadas.grid(row=2, column=1)
+        self.valor_hora.grid(row=3, column=1)
+        self.retencion.grid(row=4, column=1)
 
-tk.Label(root, text="Código del Empleado").grid(row=0, column=0)
-entry_codigo = tk.Entry(root)
-entry_codigo.grid(row=0, column=1)
+        # Botón
+        tk.Button(self.root, text="Calcular", command=self.calcular).grid(row=5, columnspan=2)
 
-tk.Label(root, text="Nombres").grid(row=1, column=0)
-entry_nombres = tk.Entry(root)
-entry_nombres.grid(row=1, column=1)
+        # Resultados
+        self.resultado = tk.Text(self.root, height=5, width=30)
+        self.resultado.grid(row=6, columnspan=2)
 
-tk.Label(root, text="Horas Trabajadas").grid(row=2, column=0)
-entry_horas = tk.Entry(root)
-entry_horas.grid(row=2, column=1)
+    def calcular(self):
+        emp = Empleado(
+            self.codigo.get(),
+            self.nombres.get(),
+            float(self.horas_trabajadas.get()),
+            float(self.valor_hora.get()),
+            float(self.retencion.get())
+        )
 
-tk.Label(root, text="Valor por Hora").grid(row=3, column=0)
-entry_valor_hora = tk.Entry(root)
-entry_valor_hora.grid(row=3, column=1)
+        salario_bruto = emp.calcular_salario_bruto()
+        salario_neto = emp.calcular_salario_neto()
 
-tk.Label(root, text="Porcentaje de Retención").grid(row=4, column=0)
-entry_retencion = tk.Entry(root)
-entry_retencion.grid(row=4, column=1)
+        resultado_texto = (
+            f"Código: {emp.codigo}\n"
+            f"Nombres: {emp.nombres}\n"
+            f"Salario Bruto: {salario_bruto}\n"
+            f"Salario Neto: {salario_neto}\n"
+        )
 
-tk.Button(root, text="Calcular Salarios", command=calcular_salarios).grid(row=5, column=0, columnspan=2)
+        self.resultado.delete(1.0, tk.END)
+        self.resultado.insert(tk.END, resultado_texto)
 
-root.mainloop()
+    def ejecutar(self):
+        self.root.mainloop()
+
+# InterfazEmpleado().ejecutar()
