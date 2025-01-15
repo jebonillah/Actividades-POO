@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import messagebox
 import math
 
-# Clase TrianguloEquilatero
 class TrianguloEquilatero:
     def __init__(self, lado):
         self.lado = lado
@@ -14,30 +13,34 @@ class TrianguloEquilatero:
         return (math.sqrt(3) / 2) * self.lado
 
     def calcular_area(self):
-        return (self.lado * self.calcular_altura()) / 2
+        return (self.lado ** 2) * (math.sqrt(3) / 4)
 
-# Función para calcular y mostrar los resultados
-def calcular_triangulo():
-    try:
-        lado = float(entry_lado.get())
+class InterfazTriangulo:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("Triángulo Equilátero")
+        self.crear_interfaz()
 
-        triangulo = TrianguloEquilatero(lado)
-        perimetro = triangulo.calcular_perimetro()
-        altura = triangulo.calcular_altura()
-        area = triangulo.calcular_area()
+    def crear_interfaz(self):
+        tk.Label(self.root, text="Ingrese el lado del triángulo:").pack()
+        self.entry_lado = tk.Entry(self.root)
+        self.entry_lado.pack()
+        tk.Button(self.root, text="Calcular", command=self.calcular).pack()
 
-        messagebox.showinfo("Resultados", f"Lado: {lado}\nPerímetro: {perimetro:.2f}\nAltura: {altura:.2f}\nÁrea: {area:.2f}")
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese un valor válido para el lado.")
+    def calcular(self):
+        try:
+            lado = float(self.entry_lado.get())
+            triangulo = TrianguloEquilatero(lado)
+            perimetro = triangulo.calcular_perimetro()
+            altura = triangulo.calcular_altura()
+            area = triangulo.calcular_area()
+            messagebox.showinfo("Resultados", 
+                                f"Perímetro: {perimetro}\nAltura: {altura}\nÁrea: {area}")
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido.")
 
-# Configuración de la interfaz gráfica
-root = tk.Tk()
-root.title("Calculadora de Triángulo Equilátero")
+    def ejecutar(self):
+        self.root.mainloop()
 
-tk.Label(root, text="Valor del Lado").grid(row=0, column=0)
-entry_lado = tk.Entry(root)
-entry_lado.grid(row=0, column=1)
-
-tk.Button(root, text="Calcular", command=calcular_triangulo).grid(row=1, column=0, columnspan=2)
-
-root.mainloop()
+interfaz = InterfazTriangulo()
+interfaz.ejecutar()
