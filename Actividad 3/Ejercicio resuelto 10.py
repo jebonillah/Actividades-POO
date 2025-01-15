@@ -1,57 +1,66 @@
 import tkinter as tk
-from tkinter import messagebox
 
-# Clase Estudiante
 class Estudiante:
-    def __init__(self, numero_inscripcion, nombres, patrimonio, estrato_social):
-        self.numero_inscripcion = numero_inscripcion
+    def __init__(self, num_inscripcion, nombres, patrimonio, estrato):
+        self.num_inscripcion = num_inscripcion
         self.nombres = nombres
         self.patrimonio = patrimonio
-        self.estrato_social = estrato_social
-        self.pago_base = 50000
+        self.estrato = estrato
 
     def calcular_pago_matricula(self):
-        if self.patrimonio > 2000000 and self.estrato_social > 3:
-            incremento = self.patrimonio * 0.03
-        else:
-            incremento = 0
-        return self.pago_base + incremento
+        base_pago = 50000
+        if self.patrimonio > 2000000 and self.estrato > 3:
+            return base_pago + (self.patrimonio * 0.03)
+        return base_pago
 
-# Función para calcular y mostrar el pago de matrícula
-def calcular_matricula():
-    try:
-        numero_inscripcion = entry_numero.get()
-        nombres = entry_nombres.get()
-        patrimonio = float(entry_patrimonio.get())
-        estrato_social = int(entry_estrato.get())
+class InterfazEstudiante:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("Estudiante")
 
-        estudiante = Estudiante(numero_inscripcion, nombres, patrimonio, estrato_social)
-        pago_matricula = estudiante.calcular_pago_matricula()
+        # Widgets de entrada
+        tk.Label(self.root, text="Número de Inscripción").grid(row=0, column=0)
+        tk.Label(self.root, text="Nombres").grid(row=1, column=0)
+        tk.Label(self.root, text="Patrimonio").grid(row=2, column=0)
+        tk.Label(self.root, text="Estrato").grid(row=3, column=0)
 
-        messagebox.showinfo("Resultado", f"Número de Inscripción: {numero_inscripcion}\nNombres: {nombres}\nPago de Matrícula: ${pago_matricula:.2f}")
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingrese valores válidos para patrimonio y estrato social.")
+        self.num_inscripcion = tk.Entry(self.root)
+        self.nombres = tk.Entry(self.root)
+        self.patrimonio = tk.Entry(self.root)
+        self.estrato = tk.Entry(self.root)
 
-# Configuración de la interfaz gráfica
-root = tk.Tk()
-root.title("Calculadora de Pago de Matrícula")
+        self.num_inscripcion.grid(row=0, column=1)
+        self.nombres.grid(row=1, column=1)
+        self.patrimonio.grid(row=2, column=1)
+        self.estrato.grid(row=3, column=1)
 
-tk.Label(root, text="Número de Inscripción").grid(row=0, column=0)
-entry_numero = tk.Entry(root)
-entry_numero.grid(row=0, column=1)
+        # Botón
+        tk.Button(self.root, text="Calcular", command=self.calcular).grid(row=4, columnspan=2)
 
-tk.Label(root, text="Nombres").grid(row=1, column=0)
-entry_nombres = tk.Entry(root)
-entry_nombres.grid(row=1, column=1)
+        # Resultados
+        self.resultado = tk.Text(self.root, height=5, width=30)
+        self.resultado.grid(row=5, columnspan=2)
 
-tk.Label(root, text="Patrimonio").grid(row=2, column=0)
-entry_patrimonio = tk.Entry(root)
-entry_patrimonio.grid(row=2, column=1)
+    def calcular(self):
+        est = Estudiante(
+            self.num_inscripcion.get(),
+            self.nombres.get(),
+            float(self.patrimonio.get()),
+            int(self.estrato.get())
+        )
 
-tk.Label(root, text="Estrato Social").grid(row=3, column=0)
-entry_estrato = tk.Entry(root)
-entry_estrato.grid(row=3, column=1)
+        pago_matricula = est.calcular_pago_matricula()
 
-tk.Button(root, text="Calcular Matrícula", command=calcular_matricula).grid(row=4, column=0, columnspan=2)
+        resultado_texto = (
+            f"Número de Inscripción: {est.num_inscripcion}\n"
+            f"Nombres: {est.nombres}\n"
+            f"Pago de Matrícula: {pago_matricula}\n"
+        )
 
-root.mainloop()
+        self.resultado.delete(1.0, tk.END)
+        self.resultado.insert(tk.END, resultado_texto)
+
+    def ejecutar(self):
+        self.root.mainloop()
+
+# InterfazEstudiante().ejecutar()
