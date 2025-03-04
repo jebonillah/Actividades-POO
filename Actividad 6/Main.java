@@ -1,5 +1,3 @@
-package actividad.pkg6;
-
 import javax.swing.SwingUtilities;
 
 public class Main {
